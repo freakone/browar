@@ -45,7 +45,7 @@
         }
 
 
-        var ws = new WebSocket("ws://localhost/ws");
+        var ws = new WebSocket("ws://kaliszfornia.brewit.pl/ws");
         ws.onmessage = function(evt) {
             json = JSON.parse(evt.data);
             console.log(json);
