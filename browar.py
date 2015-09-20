@@ -84,8 +84,6 @@ th_server.start()
 conn = sqlite3.connect('brew.db')
 c = conn.cursor()
 
-#"INSERT INTO temperatures VALUES (NOW(), 2, 2, 2)"
-
 browar_web.web_server.app.connect_ws = client_callback
 browar_web.web_server.app.message_ws = client_msg
 
@@ -104,7 +102,7 @@ while True:
 
     conn.commit()
 
-    sql = "INSERT INTO temperatures VALUES (NOW(), {}, {}, 0, 0, 0)".format(gora, dol)
+    sql = "INSERT INTO temperatures VALUES (datetime('now'), {}, {}, 0, 0, 0)".format(gora, dol)
     print(sql)
     c.execute(sql)
     conn.commit()
