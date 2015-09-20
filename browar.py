@@ -31,11 +31,9 @@ def client_callback():
     c = conn.cursor()
     c.execute("SELECT * FROM (SELECT * FROM temperatures ORDER BY timestamp DESC LIMIT 50) ORDER BY timestamp ASC")
     items = c.fetchall()
-    for client in browar_web.web_server.app.clients:
-        client.send(json.dumps( { "action": "init", "data": items}))
 
-    for client in browar_web.web_server.app.clients:
-        client.send(json.dumps({"action": "state", "pompa": PUMP_STATE , "sprezarka": COMPRESSOR_STATE}))
+    browar_web.send_all(json.dumps( { "action": "init", "data": items}))
+    browar_web.send_all(json.dumps({"action": "state", "pompa": PUMP_STATE , "sprezarka": COMPRESSOR_STATE}))
 
     conn.close()
 
@@ -64,15 +62,13 @@ def set_pump(st):
     global PUMP_STATE
     PUMP_STATE = st   
     GPIO.output(POMPA, st)
-    for client in browar_web.web_server.app.clients:
-        client.send(json.dumps({"action": "state", "pompa": PUMP_STATE , "sprezarka": COMPRESSOR_STATE}))
+    browar_web.send_all(json.dumps({"action": "state", "pompa": PUMP_STATE , "sprezarka": COMPRESSOR_STATE}))
 
 def set_compressor(st):
     global COMPRESSOR_STATE
     COMPRESSOR_STATE = st  
     GPIO.output(KOMPRESOR, st)
-    for client in browar_web.web_server.app.clients:
-        client.send(json.dumps({"action": "state", "pompa": PUMP_STATE , "sprezarka": COMPRESSOR_STATE}))
+    browar_web.send_all(json.dumps({"action": "state", "pompa": PUMP_STATE , "sprezarka": COMPRESSOR_STATE}))
 
 
 
@@ -94,8 +90,7 @@ while True:
 
     js = {"action": "add", "gora": gora, "dol": dol, "time": strftime("%Y-%m-%d %H:%M:%S", gmtime())}
 
-    for client in browar_web.web_server.app.clients:
-        client.send(json.dumps(js))
+    browar_web.send_all(json.dumps(js))
 
     print "sensor gorny %s" % gora
     print "sensor dolny %s" % dol
