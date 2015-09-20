@@ -58,3 +58,4 @@ docs/_build/
 target/
 *.pyc
 browar_web/controllers/temperature_controller.pyc
+sftp-config.json
