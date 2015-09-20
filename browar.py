@@ -17,8 +17,8 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(POMPA, GPIO.OUT)
 GPIO.setup(KOMPRESOR, GPIO.OUT) 
 
-PUMP_STATE = GPIO.input(KOMPRESOR) ##odczyt aktualnego stanu
-COMPRESSOR_STATE = GPIO.input(POMPA)
+PUMP_STATE = GPIO.input(POMPA) ##odczyt aktualnego stanu
+COMPRESSOR_STATE = GPIO.input(KOMPRESOR)
 
 sensor_beczka = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "0315043e5fff")
 sensor_ext = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "03150431dcff")
@@ -74,8 +74,6 @@ def set_compressor(st):
     browar_web.web_server.send_all(json.dumps({"action": "state", "pompa": PUMP_STATE , "sprezarka": COMPRESSOR_STATE}))
 
 
-
-
 th_server = threading.Thread(target=browar_web.web_server.ws)
 th_server.setDaemon(True)
 th_server.start()
@@ -100,7 +98,7 @@ while True:
 
     conn.commit()
 
-    sql = "INSERT INTO temperatures VALUES (datetime('now'), {}, {}, 0, 0, 0)".format(gora, dol)
+    sql = "INSERT INTO temperatures VALUES (datetime('now'), {}, {}, 0, {}, {})".format(gora, dol, PUMP_STATE, COMPRESSOR_STATE)
     print(sql)
     c.execute(sql)
     conn.commit()
