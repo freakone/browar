@@ -14,7 +14,11 @@ import threading
 from gevent.pywsgi import WSGIServer
 from geventwebsocket.handler import WebSocketHandler
 
+def def_call():
+    pass
+
 app = Bottle()
+app.connect_ws = def_call
 
 def ws():
     server = WSGIServer(("0.0.0.0", 80), app, handler_class=WebSocketHandler)

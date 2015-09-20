@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script type="text/javascript" src="http://www.chartjs.org/assets/Chart.min.js"></script>
+
+  <script type="text/javascript">
+    var ws = new WebSocket("ws://localhost/ws");
+    ws.onmessage = function (evt) {
+        json = JSON.parse(evt.data)
+        console.log(json);
+        $('span.gora').html(json['gora']);
+        $('span.dol').html(json['dol']);
+    };
+
+    var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
+    var lineChartData = {
+      labels : [],
+      datasets : [
+        {
+          label: "My Second dataset",
+          fillColor : "rgba(151,187,205,0.2)",
+          strokeColor : "rgba(151,187,205,1)",
+          pointColor : "rgba(151,187,205,1)",
+          pointStrokeColor : "#fff",
+          pointHighlightFill : "#fff",
+          pointHighlightStroke : "rgba(151,187,205,1)",
+          data : []
+        }
+      ]
+
+    }
+
+  window.onload = function(){
+    var ctx = document.getElementById("canvas").getContext("2d");
+    window.myLine = new Chart(ctx).Line(lineChartData, {
+      responsive: true
+    });
+  }
+
+  </script>
+</head>
+<body>
+<ul>
+    <li>Temperatura góra <span class="gora">0</span></li>
+    <li>Temperatura dó³ <span class="dol">0</span></li>
+</ul> 
+
+<div style="width:30%">
+  <div>
+    <canvas id="canvas" height="450" width="600"></canvas>
+  </div>
+</div>
+
+
+</body>
+</html>

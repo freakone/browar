@@ -16,11 +16,10 @@ def handle_websocket():
     if not wsock:
         abort(400, 'Expected WebSocket request.')
     app.clients.append(wsock)
+    app.connect_ws()
     while True:
         try:
             message = wsock.receive()
-            print message
         except WebSocketError:
-            print "disconnected"
             app.clients.remove(wsock)
             break
