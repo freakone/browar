@@ -91,8 +91,8 @@
         <li>Sprezarka <span class="sprezarka">OFF</span>
             <button onclick="sprezarka()">TOGGLE</button>
         </li>
-        <li>Temperatura gora <span class="gora">0</span></li>
-        <li>Temperatura dol <span class="dol">0</span></li>
+        <li>Temperatura fermentor <span class="gora">0</span></li>
+        <li>Temperatura beczka <span class="dol">0</span></li>
     </ul>
 
     <div style="width:70%">

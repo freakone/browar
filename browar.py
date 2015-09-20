@@ -9,9 +9,6 @@ import random
 import sqlite3
 from time import gmtime, strftime
 
-PUMP_STATE = 0
-COMPRESSOR_STATE = 0
-
 # Pin Definitons:
 KOMPRESOR = 14
 POMPA = 15
@@ -20,29 +17,35 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(POMPA, GPIO.OUT)
 GPIO.setup(KOMPRESOR, GPIO.OUT) 
 
-GPIO.output(POMPA, 0) #sterowanie przekaznikami
-GPIO.output(KOMPRESOR, 0)
+PUMP_STATE = GPIO.input(KOMPRESOR) ##odczyt aktualnego stanu
+COMPRESSOR_STATE = GPIO.input(POMPA)
 
 sensor_beczka = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "0315043e5fff")
 sensor_ext = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "03150431dcff")
 
-def client_callback():
+def client_callback(wsock):
     conn = sqlite3.connect('brew.db')
     c = conn.cursor()
     c.execute("SELECT * FROM (SELECT * FROM temperatures ORDER BY timestamp DESC LIMIT 50) ORDER BY timestamp ASC")
     items = c.fetchall()
 
-    browar_web.web_server.send_all(json.dumps( { "action": "init", "data": items}))
-    browar_web.web_server.send_all(json.dumps({"action": "state", "pompa": PUMP_STATE , "sprezarka": COMPRESSOR_STATE}))
-
+    try:
+        wsock.send(json.dumps( { "action": "init", "data": items}))
+        wsock.send(json.dumps({"action": "state", "pompa": PUMP_STATE , "sprezarka": COMPRESSOR_STATE}))
+    except:
+        print "error in sockets sending"
+        
     conn.close()
 
 def client_msg(msg):
-    msg = json.loads(msg)
-    if msg["action"] == "pump":        
-        toggle_pump()
-    elif msg["action"] == "compressor":
-        toggle_compressor()
+    try:
+        msg = json.loads(msg)
+        if msg["action"] == "pump":        
+            toggle_pump()
+        elif msg["action"] == "compressor":
+            toggle_compressor()
+    except:
+        pass
 
 def toggle_pump():
     global PUMP_STATE
