@@ -19,6 +19,7 @@ def def_call():
 
 app = Bottle()
 app.connect_ws = def_call
+app.message_ws = def_call
 
 def ws():
     server = WSGIServer(("0.0.0.0", 80), app, handler_class=WebSocketHandler)

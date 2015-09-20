@@ -20,6 +20,7 @@ def handle_websocket():
     while True:
         try:
             message = wsock.receive()
+            app.message_ws(message)
         except WebSocketError:
             app.clients.remove(wsock)
             break
