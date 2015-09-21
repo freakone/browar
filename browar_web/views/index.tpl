@@ -10,7 +10,7 @@
             labels: [],
             datasets: [
             {
-              label: "My First dataset",
+              label: "Beczka",
               fillColor : "rgba(220,220,220,0.2)",
               strokeColor : "rgba(220,220,220,1)",
               pointColor : "rgba(220,220,220,1)",
@@ -20,13 +20,33 @@
               data : []
             },
             {
-                label: "My Second dataset",
+                label: "Fermentor",
                 fillColor: "rgba(151,187,205,0.2)",
                 strokeColor: "rgba(151,187,205,1)",
                 pointColor: "rgba(151,187,205,1)",
                 pointStrokeColor: "#fff",
                 pointHighlightFill: "#fff",
                 pointHighlightStroke: "rgba(151,187,205,1)",
+                data: []
+            },
+            {
+                label: "Pompa",
+                fillColor: "rgba(170, 44, 44, 0.9)",
+                strokeColor: "rgba(170, 44, 44, 0.9)",
+                pointColor: "rgba(170, 44, 44, 0.9)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(170, 44, 44, 0.9)",
+                data: []
+            },
+            {
+                label: "Kompresor",
+                fillColor: "rgba(170, 198, 44, 0.9",
+                strokeColor: "rgba(170, 198, 44, 0.9)",
+                pointColor: "rgba(170, 198, 44, 0.9)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(170, 198, 44, 0.9)",
                 data: []
             }]
 
@@ -55,7 +75,8 @@
                         lineChartData.labels.push(item[0])
                         lineChartData.datasets[0]["data"].push(item[1])
                         lineChartData.datasets[1]["data"].push(item[2])
-
+                        lineChartData.datasets[2]["data"].push(item[4])
+                        lineChartData.datasets[3]["data"].push(item[5]*2)
                         $('span.gora').html(item[1]);
                         $('span.dol').html(item[2]);
                     });
@@ -68,9 +89,9 @@
 
                     break;
                 case "add":
-                    $('span.gora').html(json['gora']);
-                    $('span.dol').html(json['dol']);
-                    window.myLine.addData([json['gora'], json['dol']], json['time'])
+                    $('span.gora').html(json['ext']);
+                    $('span.dol').html(json['beczka']);
+                    window.myLine.addData([json['ext'], json['beczka'], json['pompa'], json['sprezarka']*2], json['time'])
 
                     break;
 

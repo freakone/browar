@@ -86,19 +86,19 @@ browar_web.web_server.app.message_ws = client_msg
 
 
 while True:
-    gora = sensor_ext.get_temperature()
-    dol = sensor_beczka.get_temperature()
+    ext = sensor_ext.get_temperature()
+    beczka = sensor_beczka.get_temperature()
 
-    js = {"action": "add", "gora": gora, "dol": dol, "time": strftime("%Y-%m-%d %H:%M:%S", gmtime())}
+    js = {"action": "add", "ext": ext, "beczka": beczka, "time": strftime("%Y-%m-%d %H:%M:%S", gmtime()), "pompa": PUMP_STATE, "sprezarka": COMPRESSOR_STATE}
 
     browar_web.web_server.send_all(json.dumps(js))
 
-    print "sensor gorny %s" % gora
-    print "sensor dolny %s" % dol
+    print "sensor beczka %s" % ext
+    print "sensor ext %s" % beczka
 
     conn.commit()
 
-    sql = "INSERT INTO temperatures VALUES (datetime('now'), {}, {}, 0, {}, {})".format(gora, dol, PUMP_STATE, COMPRESSOR_STATE)
+    sql = "INSERT INTO temperatures VALUES (datetime('now'), {}, {}, 0, {}, {})".format(ext, beczka, PUMP_STATE, COMPRESSOR_STATE)
     print(sql)
     c.execute(sql)
     conn.commit()
