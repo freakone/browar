@@ -75,8 +75,8 @@
                         lineChartData.labels.push(item[0])
                         lineChartData.datasets[0]["data"].push(item[1])
                         lineChartData.datasets[1]["data"].push(item[2])
-                        lineChartData.datasets[2]["data"].push(item[4])
-                        lineChartData.datasets[3]["data"].push(item[5]*2)
+                        lineChartData.datasets[2]["data"].push(item[4]*2)
+                        lineChartData.datasets[3]["data"].push(item[5])
                         $('span.gora').html(item[1]);
                         $('span.dol').html(item[2]);
                     });
@@ -91,7 +91,7 @@
                 case "add":
                     $('span.gora').html(json['ext']);
                     $('span.dol').html(json['beczka']);
-                    window.myLine.addData([json['ext'], json['beczka'], json['pompa'], json['sprezarka']*2], json['time'])
+                    window.myLine.addData([json['ext'], json['beczka'], json['pompa']*2, json['sprezarka']], json['time'])
 
                     break;
 
