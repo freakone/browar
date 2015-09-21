@@ -10,7 +10,7 @@
             labels: [],
             datasets: [
             {
-              label: "Beczka",
+              label: "Fermentor",
               fillColor : "rgba(220,220,220,0.2)",
               strokeColor : "rgba(220,220,220,1)",
               pointColor : "rgba(220,220,220,1)",
@@ -20,7 +20,7 @@
               data : []
             },
             {
-                label: "Fermentor",
+                label: "Beczka",
                 fillColor: "rgba(151,187,205,0.2)",
                 strokeColor: "rgba(151,187,205,1)",
                 pointColor: "rgba(151,187,205,1)",
@@ -47,8 +47,9 @@
                 pointStrokeColor: "#fff",
                 pointHighlightFill: "#fff",
                 pointHighlightStroke: "rgba(170, 198, 44, 0.9)",
-                data: []
-            }]
+                data: [],
+            }],
+
 
         }
 
@@ -83,8 +84,11 @@
 
                     var ctx = document.getElementById("canvas").getContext("2d");
                     window.myLine = new Chart(ctx).Line(lineChartData, {
-                        responsive: true
+                        responsive: true,
+                        legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
                     });
+
+                    $('#legend').append(window.myLine.generateLegend());
 
 
                     break;
@@ -102,6 +106,19 @@
             }
         };
     </script>
+
+    <style type="text/css">
+    .line-legend li span{
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        margin-right: 5px;
+    }
+    #legend ul li{
+        display: inline;
+        margin-right: 10px;
+    }
+    </style>
 </head>
 
 <body>
@@ -115,6 +132,8 @@
         <li>Temperatura fermentor <span class="gora">0</span></li>
         <li>Temperatura beczka <span class="dol">0</span></li>
     </ul>
+
+    <div id ="legend"></div>
 
     <div style="width:70%">
         <div>
