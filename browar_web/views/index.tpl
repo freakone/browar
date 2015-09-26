@@ -65,6 +65,13 @@
             }));
         }
 
+        var set_dest = function() {
+            ws.send(JSON.stringify({
+                action: "set_dest",
+                beczka: $('#dest_beczka').val(),
+                fermentor: $('#dest_fermentor').val()
+            }));
+        }
 
         var ws = new WebSocket("ws://kaliszfornia.brewit.pl/ws");
         ws.onmessage = function(evt) {
@@ -103,6 +110,15 @@
                     $('span.pompa').html(json['pompa']);
                     $('span.sprezarka').html(json['sprezarka']);
                     break;
+
+                case "set_dest":
+                    $('#dest_beczka').val(json['beczka']);
+                    $('#dest_fermentor').val(json['fermentor']);
+                    $('span.change').html(" Zmieniono nastawy")
+                    setTimeout(function(){
+                      $('span.change').html("")
+                    }, 2000);
+                    break;
             }
         };
     </script>
@@ -131,6 +147,9 @@
         </li>
         <li>Temperatura fermentor <span class="gora">0</span></li>
         <li>Temperatura beczka <span class="dol">0</span></li>
+        <li>Docelowo - beczka <input id="dest_beczka" type="number" min="1" max="25" step="1"></li>
+        <li>Docelowo - fermentor <input id="dest_fermentor" type="number" min="1" max="25" step="1"></li>
+        <li><button onclick="set_dest()">Ustaw regulator</button><span class="change"></span></li>
     </ul>
 
     <div id ="legend"></div>

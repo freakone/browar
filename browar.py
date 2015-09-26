@@ -8,6 +8,7 @@ import json
 import random
 import sqlite3
 from time import gmtime, strftime
+import pickle
 
 # Pin Definitons:
 KOMPRESOR = 14
@@ -23,13 +24,17 @@ COMPRESSOR_STATE = GPIO.input(KOMPRESOR)
 sensor_beczka = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "0315043e5fff")
 sensor_ext = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "03150431dcff")
 
+DEST_BECZKA = 10
+DEST_FERMENTOR = 15
+
 def client_callback(wsock):
     conn = sqlite3.connect('brew.db')
     c = conn.cursor()
-    c.execute("SELECT * FROM (SELECT * FROM temperatures ORDER BY timestamp DESC LIMIT 50) ORDER BY timestamp ASC")
+    c.execute("SELECT * FROM (SELECT * FROM temperatures ORDER BY timestamp DESC LIMIT 60) ORDER BY timestamp ASC")
     items = c.fetchall()
 
     try:
+        wsock.send(json.dumps( { "action": "set_dest", "beczka": DEST_BECZKA, "fermentor": DEST_FERMENTOR}))
         wsock.send(json.dumps( { "action": "init", "data": items}))
         wsock.send(json.dumps({"action": "state", "pompa": PUMP_STATE , "sprezarka": COMPRESSOR_STATE}))
     except:
@@ -44,6 +49,14 @@ def client_msg(msg):
             toggle_pump()
         elif msg["action"] == "compressor":
             toggle_compressor()
+        elif msg["action"] == "set_dest":
+            global DEST_BECZKA
+            global DEST_FERMENTOR
+            DEST_BECZKA = msg["beczka"]
+            DEST_FERMENTOR = msg["fermentor"]
+            browar_web.web_server.send_all(json.dumps( { "action": "set_dest", "beczka": DEST_BECZKA, "fermentor": DEST_FERMENTOR}))
+            with open('temps.p', 'w') as f:
+                pickle.dump([DEST_FERMENTOR, DEST_BECZKA], f)
     except:
         pass
 
@@ -74,6 +87,12 @@ def set_compressor(st):
     browar_web.web_server.send_all(json.dumps({"action": "state", "pompa": PUMP_STATE , "sprezarka": COMPRESSOR_STATE}))
 
 
+try:
+    with open('temps.p') as f:
+        DEST_FERMENTOR, DEST_BECZKA = pickle.load(f)
+except:
+    print("#pickle load error, file empty or not exists")
+
 th_server = threading.Thread(target=browar_web.web_server.ws)
 th_server.setDaemon(True)
 th_server.start()
@@ -93,13 +112,12 @@ while True:
 
     browar_web.web_server.send_all(json.dumps(js))
 
-    print "sensor beczka %s" % ext
-    print "sensor ext %s" % beczka
+    print "beczka aktualna:{} docelowa:{}".format(beczka, DEST_BECZKA)
+    print "fermentor aktualna:{} docelowa:{}".format(ext, DEST_FERMENTOR)
 
     conn.commit()
 
     sql = "INSERT INTO temperatures VALUES (datetime('now'), {}, {}, 0, {}, {})".format(ext, beczka, PUMP_STATE, COMPRESSOR_STATE)
-    print(sql)
     c.execute(sql)
     conn.commit()
     
