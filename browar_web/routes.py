@@ -16,7 +16,7 @@ def handle_websocket():
     if not wsock:
         abort(400, 'Expected WebSocket request.')
     app.clients.append(wsock)
-    app.connect_ws()
+    app.connect_ws(wsock)
     while True:
         try:
             message = wsock.receive()
