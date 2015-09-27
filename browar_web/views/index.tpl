@@ -53,23 +53,18 @@
 
         }
 
-        var pompa = function() {
+        var toggle = function(act, sec) {
             ws.send(JSON.stringify({
-                action: "pump"
+                action: act,
+                secret: sec
             }));
         }
-
-        var sprezarka = function() {
-            ws.send(JSON.stringify({
-                action: "compressor"
-            }));
-        }
-
-        var set_dest = function() {
+        var set_dest = function(sec) {
             ws.send(JSON.stringify({
                 action: "set_dest",
                 beczka: $('#dest_beczka').val(),
-                fermentor: $('#dest_fermentor').val()
+                fermentor: $('#dest_fermentor').val(),
+                secret: sec
             }));
         }
 
@@ -139,17 +134,17 @@
 
 <body>
     <ul>
-        <li>Pompa <span class="pompa">OFF</span>
-            <button onclick="pompa()">TOGGLE</button>
-        </li>
-        <li>Sprezarka <span class="sprezarka">OFF</span>
-            <button onclick="sprezarka()">TOGGLE</button>
-        </li>
+        <li>Pompa <span class="pompa">OFF</span></li>
+        <li>Sprezarka <span class="sprezarka">OFF</span></li>
         <li>Temperatura fermentor <span class="gora">0</span></li>
         <li>Temperatura beczka <span class="dol">0</span></li>
         <li>Docelowo - beczka <input id="dest_beczka" type="number" min="1" max="25" step="1"></li>
         <li>Docelowo - fermentor <input id="dest_fermentor" type="number" min="1" max="25" step="1"></li>
-        <li><button onclick="set_dest()">Ustaw regulator</button><span class="change"></span></li>
+        % if defined('perm'):
+        <li><button onclick="set_dest('dupa')">Set controller</button><span class="change"></span></li>
+        <li><button onclick="toggle('pump', 'dupa')">Toggle pump</button></li>
+        <li><button onclick="toggle('compressor', 'dupa')">Toggle compressor</button></li>
+        % end
     </ul>
 
     <div id ="legend"></div>

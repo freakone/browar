@@ -45,6 +45,10 @@ def client_callback(wsock):
 def client_msg(msg):
     try:
         msg = json.loads(msg)
+
+        if msg["secret"] != "dupa":
+            return
+
         if msg["action"] == "pump":        
             toggle_pump()
         elif msg["action"] == "compressor":
